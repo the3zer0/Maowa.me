@@ -33,7 +33,7 @@
 
 <div align="center">
   <a href="https://maowa.me/">
-    <img src="./docs/maowa-website-preview.webp" alt="Actual Maowa.me website screenshot showing the hero and featured video sections" width="520" />
+    <img src="./docs/maowa-hero-clear.webp" alt="Clear screenshot of the Maowa.me website hero section" width="100%" />
   </a>
   <br>
   <sub>Actual website screenshot supplied for this project · <a href="https://maowa.me/">Visit the live site</a></sub>
