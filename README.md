@@ -29,6 +29,16 @@
 
 **[🌐 Live Website](https://maowa.me/)** · **[💻 GitHub Repository](https://github.com/the3zer0/Maowa.me)** · **[🎬 Portfolio Gallery](https://maowa.me/#portfolio)**
 
+## 🖥️ Website screenshot
+
+<div align="center">
+  <a href="https://maowa.me/">
+    <img src="./docs/maowa-website-preview.webp" alt="Actual Maowa.me website screenshot showing the hero and featured video sections" width="520" />
+  </a>
+  <br>
+  <sub>Actual website screenshot supplied for this project · <a href="https://maowa.me/">Visit the live site</a></sub>
+</div>
+
 ## 🎞️ Selected work
 
 <div align="center">
