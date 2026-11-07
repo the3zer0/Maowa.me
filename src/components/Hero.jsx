@@ -3,14 +3,14 @@ import { asset } from '../utils/asset'
 import { registerYouTubeIframeAPIReady } from '../utils/youtubeApi'
 
 const tools = [
-  { name: 'After Effects', logo: 'after-effects.png', className: 'logo--ae' },
-  { name: 'Photoshop', logo: 'photoshop.png', className: 'logo--ps' },
-  { name: 'Illustrator', logo: 'illustrator.png', className: 'logo--ai' },
-  { name: 'Premiere Pro', logo: 'premiere-pro.png', className: 'logo--pr' },
+  { name: 'After Effects', logo: 'after-effects.png', mark: 'Ae' },
+  { name: 'Premiere Pro', logo: 'premiere-pro.png', mark: 'Pr' },
+  { name: 'Final Cut Pro', logo: 'final-cut-pro.png' },
+  { name: 'DaVinci Resolve', logo: 'davinci-resolve.png' },
 ]
 
 const stats = [
-  { value: '22k+', label: 'Content Views' },
+  { value: '22K+', label: 'Content Views' },
   { value: '1.5+', label: 'Years Experience' },
   { value: '55+', label: 'Creative Projects' },
   { value: '3K+', label: 'Hours in Premiere' },
@@ -28,6 +28,7 @@ export default function Hero() {
 
   const [playerCreated, setPlayerCreated] = useState(false)
   const [isPlayerVisible, setIsPlayerVisible] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
 
   useEffect(() => {
     let mounted = true
@@ -54,7 +55,7 @@ export default function Hero() {
               if (!mounted) return
               playerReadyRef.current = true
               setPlayerCreated(true)
-              try { e.target.mute() } catch (err) {}
+              try { e.target.mute(); setIsMuted(true) } catch (err) {}
               try {
                 e.target.seekTo(savedTimeRef.current || 0, true)
                 e.target.playVideo()
@@ -167,7 +168,7 @@ export default function Hero() {
                 onReady: (e) => {
                   playerReadyRef.current = true
                   setPlayerCreated(true)
-                  try { e.target.mute() } catch (err) {}
+                  try { e.target.mute(); setIsMuted(true) } catch (err) {}
                   try {
                     e.target.seekTo(savedTimeRef.current || 0, true)
                     e.target.playVideo()
@@ -183,43 +184,99 @@ export default function Hero() {
 
 
 
+  const handleSoundToggle = () => {
+    const player = ytPlayerRef.current
+    if (!player || !playerReadyRef.current) return
+
+    try {
+      if (player.isMuted()) {
+        player.unMute()
+        setIsMuted(false)
+      } else {
+        player.mute()
+        setIsMuted(true)
+      }
+    } catch (err) {}
+  }
+
   return (
     <>
       <section className="hero" id="home">
         <div className="hero-bg"></div>
         <div className="hero-grid"></div>
-        <div className="hero-content">
-          <span className="hero-tag fade-up">Video Editor · Content Strategist · 1.5+ Years</span>
-          <h1 className="hero-name fade-up">
-            MAOWA'S<br />
-            <span className="yellow hero-emphasis">EDITS.</span>
-          </h1>
-          <p className="hero-sub fade-up">
-            Crafting <span>high-retention YouTube videos</span> and <span>viral short-form content</span> that turn attention into audiences, and audiences into revenue.
-          </p>
-          <div className="hero-actions fade-up">
-            <a href="#portfolio" className="btn-primary">View Portfolio</a>
-            <a href="#contact" className="btn-outline">Start a Project</a>
-          </div>
-          <div className="hero-stats fade-up">
-            {stats.map((stat) => (
-              <div key={stat.label} className="hero-stat">
-                <div className="stat-num">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+        <div className="hero-main-grid">
+          <div className="hero-content">
+            <span className="hero-tag fade-up">Video Editor · Content Strategist · 1.5+ Years</span>
+            <h1 className="hero-name fade-up">
+              MAOWA'S<br />
+              <span className="yellow hero-emphasis">EDITS.</span>
+            </h1>
+            <p className="hero-sub fade-up">
+              Crafting <span>high-retention YouTube videos</span> and <span>viral short-form content</span> that turn attention into audiences, and audiences into revenue.
+            </p>
+            <div className="hero-actions fade-up">
+              <a href="#portfolio" className="btn-primary">View Portfolio</a>
+              <a href="#contact" className="btn-outline">Start a Project</a>
+              <a href={asset('resume-viewer.html')} className="btn-outline btn-resume" target="_blank" rel="noreferrer" aria-label="View resume in a new tab">
+                <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5.5 2.75h6l3.5 3.5v10.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5Z"/><path d="M11.5 2.9v3.6h3.6M7.5 10h5m-5 3h5"/></svg>
+                View Resume
+              </a>
+            </div>
+            <div className="hero-software" aria-label="Editing software">
+              <span className="hero-software-label">EDITING TOOLKIT</span>
+              <div className="hero-software-list">
+                {tools.map((tool) => (
+                  <span className="hero-software-chip" key={tool.name}>
+                    {tool.logo && <img src={asset(tool.logo)} alt="" />}
+                    {tool.name}
+                  </span>
+                ))}
               </div>
-            ))}
+            </div>
+          </div>
+
+          <div className="hero-featured fade-up" id="featured-work" ref={featuredSectionRef}>
+            <div className="featured-video-art">
+              {!playerCreated && (
+                <>
+                  <button type="button" className="featured-play-btn" onClick={handlePlayClick} aria-label="Play featured video"><span /></button>
+                  <button type="button" className="featured-video-poster" onClick={handlePlayClick} aria-label="Play featured video">
+                    <img className="featured-thumb" src={`https://i.ytimg.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`} alt="Featured video thumbnail" />
+                  </button>
+                </>
+              )}
+              <div ref={playerContainerRef} className={`featured-video-iframe ${playerCreated ? 'is-ready' : ''}`} style={{ width: '100%', height: '100%', opacity: isPlayerVisible || playerCreated ? 1 : 0 }} />
+              {playerCreated && <button type="button" className="hero-video-sound" onClick={handleSoundToggle} aria-label={isMuted ? 'Turn video sound on' : 'Mute video sound'}>
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+                  {isMuted ? <path d="m16 9 5 6m0-6-5 6" /> : <><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" /></>}
+                </svg>
+                <span>{isMuted ? 'Sound off · tap to enable' : 'Sound on'}</span>
+              </button>}
+            </div>
+            {playerCreated && <button type="button" className="hero-video-sound hero-video-sound-mobile" onClick={handleSoundToggle} aria-label={isMuted ? 'Turn video sound on' : 'Mute video sound'}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+                {isMuted ? <path d="m16 9 5 6m0-6-5 6" /> : <><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" /></>}
+              </svg>
+              <span>{isMuted ? 'Sound off' : 'Sound on'}</span>
+            </button>}
+            <span className="featured-label featured-label--compact">Featured Project</span>
+            <div className="hero-featured-card">
+              <p className="featured-project-eyebrow">FEATURED WORK</p>
+              <h2>Podcast On Client Hunting</h2>
+              <p>A cinematic short-form podcast edit focused on retention, storytelling, pacing, subtitles, and motion graphics.</p>
+            </div>
           </div>
         </div>
-        <div className="hero-floating" aria-hidden="true">
-          {tools.map((tool) => (
-            <div key={tool.name} className={`logo ${tool.className}`}>
-              <img src={asset(tool.logo)} alt="" />
+
+        <div className="hero-stats fade-up">
+          {stats.map((stat, index) => (
+            <div key={stat.label} className="hero-stat" style={{ '--stat-index': index }}>
+              <div className="stat-num">{stat.value}</div>
+              <div className="stat-label">{stat.label}</div>
             </div>
           ))}
-          <span className="hero-spark hero-spark--1"></span>
-          <span className="hero-spark hero-spark--2"></span>
-          <span className="hero-spark hero-spark--3"></span>
-          <span className="hero-spark hero-spark--4"></span>
         </div>
         <div className="hero-scroll">
           <div className="scroll-line"></div>
@@ -227,59 +284,6 @@ export default function Hero() {
         </div>
       </section>
 
-      <section className="featured-video" id="featured-work" ref={featuredSectionRef}>
-        <div className="featured-video-bg"></div>
-        <div className="featured-container">
-          <div className="featured-header fade-up">
-            <span className="featured-label">Featured Work</span>
-            <h2>MAOWA'S Best Work</h2>
-            <p className="featured-subtitle">Cinematic storytelling designed to capture attention, increase retention, and create lasting impact.</p>
-          </div>
-
-          <div className="featured-card fade-up">
-            <div className="featured-video-wrapper">
-              <div className="featured-video-art">
-                {/* Poster + play overlay as a fallback until the player is ready */}
-                {!playerCreated && (
-                  <>
-                    <button
-                      type="button"
-                      className="featured-play-btn"
-                      onClick={handlePlayClick}
-                      aria-label="Play featured video"
-                    >
-                      <span />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="featured-video-poster"
-                      onClick={handlePlayClick}
-                      aria-label="Play featured video"
-                    >
-                      <img
-                        className="featured-thumb"
-                        src={`https://i.ytimg.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`}
-                        alt="Featured video thumbnail"
-                      />
-                    </button>
-                  </>
-                )}
-
-                <div
-                  ref={playerContainerRef}
-                  className={`featured-video-iframe ${playerCreated ? 'is-ready' : ''}`}
-                  style={{ width: '100%', height: '100%', opacity: isPlayerVisible || playerCreated ? 1 : 0 }}
-                />
-              </div>
-            </div>
-
-            <div className="featured-meta">
-              <span>High-retention</span> edits. <span>Strong storytelling.</span> <span>Real impact.</span>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   )
 }

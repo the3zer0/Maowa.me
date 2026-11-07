@@ -404,3 +404,17 @@
     z-index: 1;
   }
 }
+
+/* Phone view: keep the process cards and drop the long intro copy */
+@media (max-width: 600px) {
+  .the-story { padding: 38px 0 26px; }
+  .story-grid { grid-template-columns: 1fr; gap: 0; }
+  .story-left { display: none; }
+  .story-right { width: 100%; height: auto; min-height: 0; margin: 0; }
+  .story-right .process-cards-container { height: auto; min-height: 0; padding: 12px 0; }
+  .story-right .process-cards-stack { width: min(100%, 320px); height: 330px; touch-action: pan-y; }
+  .story-right .process-card { min-height: 330px; padding: 18px; }
+  .story-right .process-card.is-active .card-arrow-button { display: inline-flex !important; visibility: visible !important; opacity: 1 !important; position: relative; z-index: 5; }
+  .story-right .orientation-toggle { display: none; }
+  .story-accents { display: none; }
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { asset } from '../utils/asset';
 import '../styles/process-cards.css';
 
@@ -32,6 +32,8 @@ const cards = [
 export default function ProcessCards() {
   const [activeCard, setActiveCard] = useState(0);
   const [orientation, setOrientation] = useState('horizontal');
+  const touchStartX = useRef(null);
+  const ignoreNextClick = useRef(false);
 
   const toggleOrientation = () => {
     setOrientation((o) => (o === 'horizontal' ? 'vertical' : 'horizontal'));
@@ -39,7 +41,23 @@ export default function ProcessCards() {
 
   const handleNextCard = (event) => {
     event.stopPropagation();
+    if (ignoreNextClick.current) return;
     setActiveCard(current => (current === cards.length - 1 ? 0 : current + 1));
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.changedTouches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current === null) return;
+    const delta = event.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 42) return;
+
+    ignoreNextClick.current = true;
+    setActiveCard(current => (current + (delta < 0 ? 1 : cards.length - 1)) % cards.length);
+    window.setTimeout(() => { ignoreNextClick.current = false; }, 350);
   };
 
   return (
@@ -58,7 +76,7 @@ export default function ProcessCards() {
         {orientation === 'horizontal' ? '↕' : '↔'}
       </button>
 
-      <div className={`process-cards-stack ${orientation === 'vertical' ? 'vertical' : ''}`}>
+      <div className={`process-cards-stack ${orientation === 'vertical' ? 'vertical' : ''}`} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchCancel={() => { touchStartX.current = null; }}>
         {cards.map((card, index) => {
           const isActive = index === activeCard;
           const isPrev = index === (activeCard + cards.length - 1) % cards.length;

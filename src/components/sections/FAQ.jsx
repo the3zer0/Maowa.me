@@ -65,6 +65,8 @@ export default function FAQ() {
               <button
                 className="faq-question"
                 onClick={() => toggleFAQ(index)}
+                aria-expanded={activeIndex === index}
+                aria-controls={`faq-answer-${index}`}
               >
                 <span className="faq-number">{String(index + 1).padStart(2, '0')}</span>
                 <span className="faq-question-text">{faq.question}</span>
@@ -75,22 +77,23 @@ export default function FAQ() {
                 </span>
               </button>
 
-              <div className={`faq-answer ${activeIndex === index ? 'show' : ''}`}>
+              <div id={`faq-answer-${index}`} aria-hidden={activeIndex !== index} className={`faq-answer ${activeIndex === index ? 'show' : ''}`}>
                 <p>{faq.answer}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="faq-cta fade-up" style={{ animationDelay: '0.7s' }}>
-          <p className="faq-cta-text">
-          Need something more specific? Let’s discuss your vision.
-          </p>
-          <a href="#contact" className="faq-cta-button">
-           LET’S TALK 
-            <span className="faq-cta-arrow">→</span>
+        {/* WhatsApp contact CTA */}
+        <div className="faq-cta faq-whatsapp-cta fade-up" style={{ animationDelay: '0.7s' }}>
+          <a href="https://wa.me/8801744641685" className="faq-whatsapp-button" target="_blank" rel="noreferrer">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M20.2 11.7a8.15 8.15 0 0 1-12.05 7.16L4 20l1.18-4.02A8.15 8.15 0 1 1 20.2 11.7Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M8.7 8.15c.2-.45.42-.46.65-.47h.55c.18 0 .36.06.46.31l.75 1.8c.09.21.07.38-.07.56l-.57.69c-.15.17-.17.32-.05.52.44.73 1.08 1.36 1.82 1.8.2.12.35.1.52-.06l.7-.58c.17-.14.34-.16.55-.07l1.8.75c.25.1.31.28.31.46v.55c-.01.23-.02.45-.47.65-.45.2-1.31.46-2.4.08-1.1-.38-2.55-1.3-3.73-2.48-1.18-1.18-2.1-2.63-2.48-3.73-.38-1.09-.12-1.95.08-2.4Z" fill="currentColor" />
+            </svg>
+            <span>Chat on WhatsApp</span>
           </a>
+          <p className="faq-response-time"><span aria-hidden="true" />Usually replies within <strong>6–12 hours</strong></p>
         </div>
       </div>
 

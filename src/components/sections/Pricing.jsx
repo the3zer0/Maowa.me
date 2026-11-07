@@ -1,6 +1,7 @@
 import '../../styles/sections/pricing.css'
+import { useState } from 'react'
 
-const packages = [
+export const packages = [
   {
     tier: 'Basic',
     price: 19,
@@ -42,7 +43,7 @@ const packages = [
   }
 ]
 
-const featureRows = [
+export const featureRows = [
   { label: 'Color grading', values: ['✓', '✓', '✓'] },
   { label: 'Sound design & mixing', values: ['✓', '✓', '✓'] },
   { label: 'Motion graphics', values: ['Basic', 'Medium', 'Advanced'] },
@@ -55,6 +56,7 @@ const featureRows = [
 ]
 
 export default function Pricing() {
+  const [activePackage, setActivePackage] = useState(1)
   const whatsappNumber = '8801744641685'
 
   const packageButtonLabels = {
@@ -79,9 +81,17 @@ export default function Pricing() {
           </div>
         </div>
 
+        <div className="pricing-mobile-tabs" role="tablist" aria-label="Video editing packages">
+          {packages.map((pkg, index) => (
+            <button key={pkg.tier} type="button" role="tab" aria-selected={activePackage === index} className={activePackage === index ? 'active' : ''} onClick={() => setActivePackage(index)}>
+              {pkg.tier}
+            </button>
+          ))}
+        </div>
+
         <div className="pricing-grid fade-up">
           {packages.map((pkg, index) => (
-            <article key={pkg.tier} className={`pricing-card ${pkg.badge ? 'popular' : ''}`} style={{ animationDelay: `${index * 0.15}s` }}>
+            <article key={pkg.tier} className={`pricing-card ${pkg.badge ? 'popular' : ''} ${activePackage === index ? 'mobile-active' : ''}`} style={{ animationDelay: `${index * 0.15}s` }}>
               {pkg.badge && (
                 <div className="pricing-badge">
                   <span>{pkg.badge.toUpperCase()}</span>
@@ -129,21 +139,6 @@ export default function Pricing() {
           ))}
         </div>
 
-        <div className="custom-plan fade-up" style={{ animationDelay: '0.45s' }}>
-          <div className="custom-plan-content">
-            <div className="custom-plan-text">
-              <h3 className="custom-plan-title">Need a Custom Plan?</h3>
-              <p className="custom-plan-description">
-                Have a unique project that doesn't fit our standard packages? Let's create a personalized solution tailored to your specific needs.
-              </p>
-            </div>
-            <a href="#contact" className="custom-plan-button">
-              Let's Discuss Your Project
-              <span className="custom-plan-arrow">→</span>
-            </a>
-          </div>
-          <div className="custom-plan-decoration"></div>
-        </div>
       </div>
     </section>
   )

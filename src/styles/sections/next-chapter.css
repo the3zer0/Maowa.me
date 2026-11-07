@@ -363,3 +363,7 @@
     animation: none;
   }
 }
+
+@media (max-width: 767px) {
+  .next-chapter { display: none; }
+}

@@ -116,6 +116,26 @@ export default function PortfolioEcosystem() {
   const modalYTRef = useRef(null);
   const modalPlayerReadyRef = useRef(false);
   const modalApiLoadingRef = useRef(false);
+  const projectTriggerRef = useRef(null);
+  const modalCloseButtonRef = useRef(null);
+
+  const openProject = (project, trigger) => {
+    try { modalYTRef.current?.destroy?.(); } catch (err) {}
+    modalYTRef.current = null;
+    modalPlayerReadyRef.current = false;
+    projectTriggerRef.current = trigger;
+    setSelectedProject(project);
+    setModalPlaying(false);
+  };
+
+  const closeProject = () => {
+    try { modalYTRef.current?.destroy?.(); } catch (err) {}
+    modalYTRef.current = null;
+    modalPlayerReadyRef.current = false;
+    setSelectedProject(null);
+    setModalPlaying(false);
+    projectTriggerRef.current?.focus?.();
+  };
 
   useEffect(() => {
     return () => {
@@ -124,10 +144,22 @@ export default function PortfolioEcosystem() {
   }, [])
 
   useEffect(() => {
+    if (!selectedProject) return undefined
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') closeProject()
+    }
+    document.addEventListener('keydown', closeOnEscape)
+    modalCloseButtonRef.current?.focus()
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [selectedProject])
+
+  useEffect(() => {
     if (!selectedProject || !modalPlaying || !selectedProject.videoId) return
 
+    let cancelled = false
+
     const createModalPlayer = () => {
-      if (!modalPlayerContainerRef.current || !window.YT) return null;
+      if (cancelled || !modalPlayerContainerRef.current || !window.YT) return null;
       if (modalYTRef.current) return modalYTRef.current;
 
       try {
@@ -147,6 +179,10 @@ export default function PortfolioEcosystem() {
           },
           events: {
             onReady: (e) => {
+              if (cancelled) {
+                try { e.target.destroy(); } catch (err) {}
+                return;
+              }
               modalPlayerReadyRef.current = true;
               try { e.target.playVideo(); } catch (err) {}
             },
@@ -171,6 +207,13 @@ export default function PortfolioEcosystem() {
         modalApiLoadingRef.current = false;
         createModalPlayer();
       });
+    }
+
+    return () => {
+      cancelled = true;
+      try { modalYTRef.current?.destroy?.(); } catch (err) {}
+      modalYTRef.current = null;
+      modalPlayerReadyRef.current = false;
     }
   }, [modalPlaying, selectedProject])
 
@@ -268,19 +311,22 @@ export default function PortfolioEcosystem() {
               >
                 <motion.div
                   className="project-card"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open project: ${project.title}`}
                   whileHover={{ y: -8, scale: 1.02 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  onClick={() => {
-                    try { if (modalYTRef.current && modalYTRef.current.destroy) modalYTRef.current.destroy(); } catch (err) {}
-                    modalYTRef.current = null;
-                    modalPlayerReadyRef.current = false;
-                    setSelectedProject(project);
-                    setModalPlaying(false);
+                  onClick={(event) => openProject(project, event.currentTarget)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      openProject(project, event.currentTarget);
+                    }
                   }}
                 >
                   <div className="project-image" style={{ backgroundColor: '#000' }}>
                     {project.poster ? (
-                      <img src={asset(project.poster)} alt={project.title} className="project-thumb" />
+                      <img src={asset(project.poster)} alt={project.title} loading="lazy" decoding="async" className="project-thumb" />
                     ) : null}
                     <motion.div
                       className="project-overlay"
@@ -332,13 +378,17 @@ export default function PortfolioEcosystem() {
         {selectedProject && (
             <motion.div
             className="project-modal-overlay"
+            role="presentation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-                onClick={() => { setSelectedProject(null); setModalPlaying(false); }}
+                onClick={closeProject}
           >
             <motion.div
               className="project-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="project-modal-title"
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -377,7 +427,7 @@ export default function PortfolioEcosystem() {
               </div>
 
               <div className="modal-content">
-                <h2 className="modal-title">{selectedProject.title}</h2>
+                <h2 className="modal-title" id="project-modal-title">{selectedProject.title}</h2>
                 <p className="modal-description">{selectedProject.description}</p>
 
                 <div className="modal-meta">
@@ -388,20 +438,21 @@ export default function PortfolioEcosystem() {
                 </div>
 
                 <a
-                  href={selectedProject.videoUrl ? selectedProject.videoUrl : (selectedProject.videoId ? `https://youtube.com/shorts/${selectedProject.videoId}` : '#')}
+                  href={selectedProject.videoUrl || `https://youtube.com/shorts/${selectedProject.videoId}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="btn btn-primary"
                 >
-  <button className="btn btn-primary">
-    View Full Project
-  </button>
-</a>
+                  View Full Project
+                </a>
               </div>
             </motion.div>
               {selectedProject && createPortal(
                 <button
+                  type="button"
+                  ref={modalCloseButtonRef}
                   className="modal-close"
-                  onClick={() => { setSelectedProject(null); setModalPlaying(false); }}
+                  onClick={closeProject}
                   aria-label="Close project modal"
                 >
                   ✕

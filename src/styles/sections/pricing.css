@@ -561,6 +561,24 @@
   }
 }
 
+@media (max-width: 560px) {
+  .pricing { padding-top: 48px; padding-bottom: 32px; }
+  .pricing-mobile-tabs { margin-bottom: 12px; }
+  .pricing-mobile-tabs button { padding: 9px 5px; font-size: 11px; }
+  .pricing-grid { margin-bottom: 18px !important; }
+  .pricing-grid .pricing-card { padding: 20px 17px 17px; border-radius: 14px; }
+  .pricing-grid .pricing-card-title { margin-bottom: 5px; font-size: 1.8rem; }
+  .pricing-grid .pricing-card-description { margin-bottom: 8px; font-size: .88rem; }
+  .pricing-grid .pricing-card-copy { margin-bottom: 13px; font-size: .86rem; line-height: 1.5; }
+  .pricing-grid .pricing-amount { margin-bottom: 13px; }
+  .pricing-grid .pricing-value { font-size: 2.2rem; }
+  .pricing-grid .pricing-features { margin-bottom: 15px; }
+  .pricing-grid .pricing-feature { padding: 8px 0; font-size: .82rem; }
+  .pricing-grid .pricing-button { min-height: 44px; padding: 10px 14px; font-size: .82rem; }
+  .pricing-grid .pricing-badge { top: 9px; right: 10px; left: auto; transform: none; font-size: 9px; }
+  .pricing-grid .pricing-card.popular:hover { transform: none; }
+}
+
 @media (max-width: 480px) {
   .pricing {
     padding: var(--spacing-xl) var(--spacing-sm);
@@ -648,6 +666,18 @@
 }
 
 /* MOBILE PRICING POLISH */
+.pricing-mobile-tabs { display:none; }
+.pricing { padding-bottom:clamp(32px,4vw,56px); }
+.pricing-grid { margin-bottom:0; }
+@media (max-width:768px) {
+  .pricing-mobile-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:5px; margin:-8px 0 18px; border:1px solid rgba(168,85,247,.22); border-radius:12px; background:rgba(255,255,255,.035); }
+  .pricing-mobile-tabs button { border:0; border-radius:8px; background:transparent; color:#aaa6b5; padding:12px 8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s,color .2s; }
+  .pricing-mobile-tabs button.active { color:#fff; background:linear-gradient(110deg,#8b5cf6,#a855f7); box-shadow:0 6px 18px rgba(139,92,246,.25); }
+  .pricing-grid { display:block; }
+  .pricing-card { display:none; }
+  .pricing-card.mobile-active { display:flex; animation:pricingCardEnter .28s ease both; }
+}
+@keyframes pricingCardEnter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @media (max-width: 768px) {
   .pricing-grid {
     margin-bottom: var(--spacing-2xl);
@@ -660,4 +690,22 @@
   .pricing-info {
     margin-top: var(--spacing-lg);
   }
+}
+
+@media (max-width: 560px) {
+  .pricing { padding: 48px 16px 32px; }
+  .pricing-mobile-tabs { margin-bottom: 12px; }
+  .pricing-mobile-tabs button { padding: 9px 5px; font-size: 11px; }
+  .pricing-grid { margin-bottom: 18px !important; }
+  .pricing-grid .pricing-card { padding: 20px 17px 17px; border-radius: 14px; }
+  .pricing-grid .pricing-card-title { margin-bottom: 5px; font-size: 1.8rem; }
+  .pricing-grid .pricing-card-description { margin-bottom: 8px; font-size: .88rem; }
+  .pricing-grid .pricing-card-copy { margin-bottom: 13px; font-size: .86rem; line-height: 1.5; }
+  .pricing-grid .pricing-amount { margin-bottom: 13px; }
+  .pricing-grid .pricing-value { font-size: 2.2rem; }
+  .pricing-grid .pricing-features { margin-bottom: 15px; }
+  .pricing-grid .pricing-feature { padding: 8px 0; font-size: .82rem; }
+  .pricing-grid .pricing-button { min-height: 44px; padding: 10px 14px; font-size: .82rem; }
+  .pricing-grid .pricing-badge { top: 9px; right: 10px; left: auto; transform: none; font-size: 9px; }
+  .pricing-grid .pricing-card.popular:hover { transform: none; }
 }

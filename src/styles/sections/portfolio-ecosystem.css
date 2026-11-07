@@ -94,6 +94,11 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.project-card:focus-visible {
+  outline: 2px solid #c084fc;
+  outline-offset: 4px;
+}
+
 .project-card:hover {
   border-color: rgba(168, 85, 247, 0.5);
   box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25), 0 0 30px rgba(168, 85, 247, 0.15);
@@ -661,4 +666,51 @@
     border-radius: 10px;
     background: rgba(0,0,0,0.22);
   }
+}
+/* Phone gallery follows Webmotion's two-column, variable-ratio project grid. */
+@media (max-width: 767px) {
+  .portfolio-ecosystem { padding: 52px 0 56px; }
+  .ecosystem-header { margin-bottom: 26px; padding-inline: 16px; }
+  .ecosystem-title { font-size: clamp(28px, 7.5vw, 38px); line-height: 1.1; margin-bottom: 12px; }
+  .ecosystem-subtitle { max-width: 40ch; font-size: 14px; line-height: 1.6; }
+
+  .filter-bar {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 2px 0;
+    overflow: visible;
+  }
+  .filter-btn { flex: 0 0 auto; min-height: 40px; padding: 8px 13px; font-size: 11px; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 16px;
+    width: auto;
+    margin: 0 -9px;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .project-card-wrapper { min-width: 0; width: 100%; }
+  .project-card-wrapper:nth-child(1),
+  .project-card-wrapper:nth-child(6) { grid-column: 1 / -1; }
+  .project-card { min-height: 0; height: auto; border-radius: 16px; }
+
+  .project-image { height: auto !important; min-height: 0; aspect-ratio: 16 / 9; background: #050508; }
+  .project-card-wrapper:nth-child(2) .project-image,
+  .project-card-wrapper:nth-child(4) .project-image,
+  .project-card-wrapper:nth-child(5) .project-image { aspect-ratio: 9 / 16; }
+  .project-card-wrapper:nth-child(3) .project-image { aspect-ratio: 1 / 1; }
+  .project-thumb { object-fit: contain; }
+
+  .project-content { padding: 14px; }
+  .project-title { font-size: clamp(15px, 4.3vw, 19px); line-height: 1.2; margin-bottom: 7px; }
+  .project-sector { font-size: 10px; margin-bottom: 8px; }
+  .project-hook { min-height: 0; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
+  .project-tools { gap: 6px; margin-bottom: 8px; }
+  .tool-logo { width: 28px; height: 28px; border-radius: 7px; }
+  .project-year { margin-top: 0; font-size: 11px; }
 }
